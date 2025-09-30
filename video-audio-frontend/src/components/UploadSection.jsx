@@ -51,7 +51,8 @@ function UploadSection({ setLoading }) {
         body: JSON.stringify({ url: ytUrl }),
       });
       const blob = await response.blob();
-      downloadBlob(blob, "audio.mp3");
+      // downloadBlob(blob, "audio.mp3");
+      downloadBlob(blob, "audio.m4a");
     } catch {
       alert("Error extracting from YouTube");
     }

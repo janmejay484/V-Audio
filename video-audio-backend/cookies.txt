@@ -1,3 +1,4 @@
-.youtube.com   TRUE   /   FALSE   1999999999   VISITOR_INFO1_LIVE   V-M3NYsK6y0
-.youtube.com   TRUE   /   FALSE   1999999999   YSC                  I49wmhuAa8M
-.youtube.com   TRUE   /   FALSE   1999999999   PREF                 f4=4000000&tz=Asia.Calcutta&f5=30000&f7=100&f6=40000000
+# Netscape HTTP Cookie File
+.youtube.com	TRUE	/	FALSE	1999999999	VISITOR_INFO1_LIVE	V-M3NYsK6y0
+.youtube.com	TRUE	/	FALSE	1999999999	YSC	I49wmhuAa8M
+.youtube.com	TRUE	/	FALSE	1999999999	PREF	f4=4000000&tz=Asia.Calcutta&f5=30000&f7=100&f6=40000000

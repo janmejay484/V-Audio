@@ -17,7 +17,6 @@ V-Audio features a clean React frontend and a Node.js backend powered by **FFmpe
   <a href="#"><img alt="License" src="https://img.shields.io/badge/License-MIT-black"></a>
 </p>
 
-**Live:** _add-vercel-url-here_ • **Backend:** [Render API](https://v-toaudio-web.onrender.com) • **Code:** this repo
 
 ---
 

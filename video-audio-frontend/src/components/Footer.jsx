@@ -12,7 +12,7 @@ function Footer() {
         </p>
         <div className={styles.socials}>
           <a
-            href="https://github.com/your-github-username"
+            href="https://github.com/janmejay484"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
@@ -20,7 +20,7 @@ function Footer() {
             <GitHubIcon />
           </a>
           <a
-            href="https://linkedin.com/in/your-linkedin-id"
+            href="https://www.linkedin.com/in/janmejay-singh484/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"

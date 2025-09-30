@@ -1,5 +1,10 @@
 # 🎶 V-Audio — Video & YouTube to MP3 Converter
 
+⚠️ **Note: This project is under development.**  
+YouTube often blocks automated requests — so to use the **YouTube → MP3** feature, you’ll need refreshed cookies.  
+Since this is a free version, cookies may expire. 👉 **Please contact me if you’d like to use it** and I’ll refresh access.  
+
+
 Extract **high-quality MP3 audio** from uploaded video files or directly from YouTube links.  
 V-Audio features a clean React frontend and a Node.js backend powered by **FFmpeg + yt-dlp**, deployable on **Vercel + Render**.
 

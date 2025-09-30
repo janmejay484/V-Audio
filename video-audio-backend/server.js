@@ -59,95 +59,60 @@ app.post("/extract", upload.single("video"), (req, res) => {
   });
 });
 
-// // 🔹 Extract from YouTube (with fallback)
-// app.post("/youtube", (req, res) => {
-//   const { url } = req.body;
-//   if (!url) return res.status(400).json({ error: "No URL provided" });
-
-//   const tmpDir = path.join("/tmp", `yt-${Date.now()}`);
-//   fs.mkdirSync(tmpDir);
-
-//   const outputPath = path.join(tmpDir, "audio.mp3");
-//   const rawPath = path.join(tmpDir, "yt-audio.webm"); // intermediate
-//   const cookieArg = fs.existsSync(COOKIE_PATH) ? `--cookies "${COOKIE_PATH}"` : "";
-
-//   // Step 1: Direct mp3 extraction
-//   const cmdPrimary = `python3 -m yt_dlp -x --audio-format mp3 --audio-quality 0 --ffmpeg-location "${FFMPEG_PATH}" ${cookieArg} -o "${outputPath}" "${url}"`;
-
-//   exec(cmdPrimary, (err, stdout, stderr) => {
-//     console.log("yt-dlp primary stderr:", stderr);
-
-//     if (!err && fs.existsSync(outputPath)) {
-//       return res.download(outputPath, "audio.mp3", () => {
-//         fs.rmSync(tmpDir, { recursive: true, force: true });
-//       });
-//     }
-
-//     // Step 2: Fallback bestaudio → convert with ffmpeg
-//     console.warn("Primary YouTube extraction failed, trying fallback…");
-
-//     const cmdFallback = `python3 -m yt_dlp -f bestaudio --ffmpeg-location "${FFMPEG_PATH}" ${cookieArg} -o "${rawPath}" "${url}"`;
-
-//     exec(cmdFallback, (fbErr, fbStdout, fbStderr) => {
-//       console.log("yt-dlp fallback stderr:", fbStderr);
-
-//       if (fbErr || !fs.existsSync(rawPath)) {
-//         fs.rmSync(tmpDir, { recursive: true, force: true });
-//         return res.status(500).json({ error: "yt-dlp failed", details: fbStderr });
-//       }
-
-//       const cmdConvert = `"${FFMPEG_PATH}" -y -i "${rawPath}" -vn -ar 44100 -ac 2 -b:a 192k "${outputPath}"`;
-
-//       exec(cmdConvert, (convErr, convStdout, convStderr) => {
-//         console.log("ffmpeg convert stderr:", convStderr);
-
-//         if (convErr || !fs.existsSync(outputPath)) {
-//           fs.rmSync(tmpDir, { recursive: true, force: true });
-//           return res.status(500).json({ error: "ffmpeg conversion failed" });
-//         }
-
-//         res.download(outputPath, "audio.mp3", () => {
-//           fs.rmSync(tmpDir, { recursive: true, force: true });
-//         });
-//       });
-//     });
-//   });
-// });
-// 🔹 Extract audio via Piped API (no yt-dlp, no ffmpeg)
-app.post("/youtube", async (req, res) => {
+// 🔹 Extract from YouTube (with fallback)
+app.post("/youtube", (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: "No URL provided" });
 
-  try {
-    // Extract video ID from YouTube link
-    const videoId = new URL(url).searchParams.get("v");
-    if (!videoId) return res.status(400).json({ error: "Invalid YouTube URL" });
+  const tmpDir = path.join("/tmp", `yt-${Date.now()}`);
+  fs.mkdirSync(tmpDir);
 
-    // Call Piped API
-    const pipedUrl = `https://pipedapi.kavin.rocks/streams/${videoId}`;
-    const response = await fetch(pipedUrl);
-    const data = await response.json();
+  const outputPath = path.join(tmpDir, "audio.mp3");
+  const rawPath = path.join(tmpDir, "yt-audio.webm"); // intermediate
+  const cookieArg = fs.existsSync(COOKIE_PATH) ? `--cookies "${COOKIE_PATH}"` : "";
 
-    if (!data.audioStreams || data.audioStreams.length === 0) {
-      return res.status(500).json({ error: "No audio streams found" });
+  // Step 1: Direct mp3 extraction
+  const cmdPrimary = `python3 -m yt_dlp -x --audio-format mp3 --audio-quality 0 --ffmpeg-location "${FFMPEG_PATH}" ${cookieArg} -o "${outputPath}" "${url}"`;
+
+  exec(cmdPrimary, (err, stdout, stderr) => {
+    console.log("yt-dlp primary stderr:", stderr);
+
+    if (!err && fs.existsSync(outputPath)) {
+      return res.download(outputPath, "audio.mp3", () => {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+      });
     }
 
-    // Pick best quality audio
-    const bestAudio = data.audioStreams.sort((a, b) => b.bitrate - a.bitrate)[0];
+    // Step 2: Fallback bestaudio → convert with ffmpeg
+    console.warn("Primary YouTube extraction failed, trying fallback…");
 
-    // Stream audio directly to client
-    const audioResp = await fetch(bestAudio.url);
+    const cmdFallback = `python3 -m yt_dlp -f bestaudio --ffmpeg-location "${FFMPEG_PATH}" ${cookieArg} -o "${rawPath}" "${url}"`;
 
-    res.setHeader("Content-Disposition", "attachment; filename=audio.m4a");
-    res.setHeader("Content-Type", "audio/mp4");
+    exec(cmdFallback, (fbErr, fbStdout, fbStderr) => {
+      console.log("yt-dlp fallback stderr:", fbStderr);
 
-    audioResp.body.pipe(res);
-  } catch (err) {
-    console.error("Piped API error:", err);
-    res.status(500).json({ error: "Failed to fetch audio" });
-  }
+      if (fbErr || !fs.existsSync(rawPath)) {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+        return res.status(500).json({ error: "yt-dlp failed", details: fbStderr });
+      }
+
+      const cmdConvert = `"${FFMPEG_PATH}" -y -i "${rawPath}" -vn -ar 44100 -ac 2 -b:a 192k "${outputPath}"`;
+
+      exec(cmdConvert, (convErr, convStdout, convStderr) => {
+        console.log("ffmpeg convert stderr:", convStderr);
+
+        if (convErr || !fs.existsSync(outputPath)) {
+          fs.rmSync(tmpDir, { recursive: true, force: true });
+          return res.status(500).json({ error: "ffmpeg conversion failed" });
+        }
+
+        res.download(outputPath, "audio.mp3", () => {
+          fs.rmSync(tmpDir, { recursive: true, force: true });
+        });
+      });
+    });
+  });
 });
-
 
 // 🔹 Dynamic port
 const PORT = process.env.PORT || 5000;

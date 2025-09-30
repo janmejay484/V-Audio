@@ -27,7 +27,7 @@ function UploadSection({ setLoading }) {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/extract", {
+      const response = await fetch("https://v-toaudio-web.onrender.com/extract", {
         method: "POST",
         body: formData,
       });
@@ -45,7 +45,7 @@ function UploadSection({ setLoading }) {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/youtube", {
+      const response = await fetch("https://v-toaudio-web.onrender.com/youtube", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: ytUrl }),

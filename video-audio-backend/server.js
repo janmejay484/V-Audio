@@ -44,10 +44,11 @@ app.post("/youtube", (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: "No URL provided" });
 
-  const outputPath = path.join(__dirname, `yt-audio-${Date.now()}.mp3`);
+  // Use video title as filename
+  const outputTemplate = path.join(__dirname, `yt-audio-%(title)s.%(ext)s`);
 
-  // 👇 use the same command that worked in your terminal
-  const cmd = `yt-dlp -x --audio-format mp3 --output "${outputPath}" "${url}"`;
+  // yt-dlp command (let it auto name with title)
+  const cmd = `yt-dlp -x --audio-format mp3 --output "${outputTemplate}" "${url}"`;
 
   exec(cmd, (err, stdout, stderr) => {
     if (err) {
@@ -55,15 +56,21 @@ app.post("/youtube", (req, res) => {
       return res.status(500).json({ error: "Error downloading audio" });
     }
 
-    // check if final mp3 exists
-    if (!fs.existsSync(outputPath)) {
-      console.error("yt-dlp did not create file:", stderr);
+    // find the generated mp3 file
+    const files = fs.readdirSync(__dirname).filter(f => f.startsWith("yt-audio-") && f.endsWith(".mp3"));
+
+    if (files.length === 0) {
+      console.error("yt-dlp did not create an MP3 file:", stderr);
       return res.status(500).json({ error: "Audio file not created" });
     }
 
-    // send file as download
-    res.download(outputPath, "audio.mp3", () => {
-      fs.unlinkSync(outputPath);
+    const finalFile = path.join(__dirname, files[0]);
+
+    // download with original name (remove prefix "yt-audio-")
+    const downloadName = files[0].replace("yt-audio-", "");
+
+    res.download(finalFile, downloadName, () => {
+      fs.unlinkSync(finalFile);
     });
   });
 });

@@ -44,37 +44,39 @@ app.post("/youtube", (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: "No URL provided" });
 
-  // Use video title as filename
-  const outputTemplate = path.join(__dirname, `yt-audio-%(title)s.%(ext)s`);
+  const tmpDir = path.join("/tmp", `yt-${Date.now()}`);
+  fs.mkdirSync(tmpDir);
 
-  // yt-dlp command (let it auto name with title)
-  const cmd = `yt-dlp -x --audio-format mp3 --output "${outputTemplate}" "${url}"`;
+  const outputPath = path.join(tmpDir, "audio.mp3");
+
+  // include cookies.txt if available
+  const cookiePath = path.join(__dirname, "cookies.txt");
+  const cookieArg = fs.existsSync(cookiePath) ? `--cookies "${cookiePath}"` : "";
+
+  const cmd = `python3 -m yt_dlp -x --audio-format mp3 --audio-quality 0 --ffmpeg-location /usr/bin/ffmpeg ${cookieArg} -o "${outputPath}" "${url}"`;
 
   exec(cmd, (err, stdout, stderr) => {
-    if (err) {
-      console.error("yt-dlp error:", stderr);
-      return res.status(500).json({ error: "Error downloading audio" });
+    console.log("yt-dlp stdout:", stdout);
+    console.log("yt-dlp stderr:", stderr);
+
+    if (err || !fs.existsSync(outputPath)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+      return res.status(500).json({ error: "yt-dlp failed", details: stderr });
     }
 
-    // find the generated mp3 file
-    const files = fs.readdirSync(__dirname).filter(f => f.startsWith("yt-audio-") && f.endsWith(".mp3"));
-
-    if (files.length === 0) {
-      console.error("yt-dlp did not create an MP3 file:", stderr);
-      return res.status(500).json({ error: "Audio file not created" });
-    }
-
-    const finalFile = path.join(__dirname, files[0]);
-
-    // download with original name (remove prefix "yt-audio-")
-    const downloadName = files[0].replace("yt-audio-", "");
-
-    res.download(finalFile, downloadName, () => {
-      fs.unlinkSync(finalFile);
+    res.download(outputPath, "audio.mp3", () => {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
     });
   });
 });
 
+// Temporary debug route
+app.get("/test-youtube", (req, res) => {
+  const url = req.query.url;
+  if (!url) return res.status(400).send("No URL provided. Add ?url=VIDEO_URL");
+
+  res.send(`✅ Backend is alive. It received YouTube URL: ${url}`);
+});
 
 // 3️⃣ Dynamic port
 const PORT = process.env.PORT || 5000;

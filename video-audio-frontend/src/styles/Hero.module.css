@@ -1,0 +1,121 @@
+.hero {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 40px;
+  text-align: center;
+  animation: fadeIn 1s ease;
+}
+
+/* Text Section */
+.textContent {
+  max-width: 600px;
+  padding: 0 10px;
+}
+
+.heading {
+  font-weight: 800 !important;
+  font-size: 2.4rem !important;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtext {
+  color: #764ba2 !important;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+.cta {
+  background: linear-gradient(90deg, #667eea, #764ba2) !important;
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  border-radius: 30px !important;
+  text-transform: none !important;
+}
+
+/* Right animation */
+.animation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ffffff, #f3f3f3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: float 3s ease-in-out infinite;
+}
+
+.eqIcon {
+  font-size: 90px !important;
+  color: #764ba2 !important;
+  animation: pulse 1.5s infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .hero {
+    flex-direction: row;
+    text-align: left;
+    padding: 80px 60px;
+  }
+  .textContent {
+    flex: 1;
+    padding-right: 40px;
+  }
+  .animation {
+    flex: 1;
+  }
+  .heading {
+    font-size: 3rem !important;
+  }
+  .subtext {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heading {
+    font-size: 1.9rem !important;
+  }
+  .subtext {
+    font-size: 0.95rem;
+  }
+  .circle {
+    width: 160px;
+    height: 160px;
+  }
+  .eqIcon {
+    font-size: 70px !important;
+  }
+}

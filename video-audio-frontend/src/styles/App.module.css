@@ -1,0 +1,7 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  /* background: linear-gradient(135deg, #7f91e0, #764ba2); */
+}

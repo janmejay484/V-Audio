@@ -65,7 +65,7 @@ const IssueHelp = () => {
         <DialogTitle
           sx={{
             fontWeight: "bold",
-            color: "#7b61ff",
+            color: "#fff",
             fontSize: "1.4rem",
             textAlign: "center",
             background: "linear-gradient(135deg, #7b61ff, #9c8cff)",

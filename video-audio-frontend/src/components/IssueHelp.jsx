@@ -10,8 +10,10 @@ import {
   Button,
   Tooltip,
   Box,
+  Link,
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
 const IssueHelp = () => {
   const [open, setOpen] = useState(false);
@@ -65,10 +67,10 @@ const IssueHelp = () => {
         <DialogTitle
           sx={{
             fontWeight: "bold",
-            color: "#fff",
             fontSize: "1.4rem",
             textAlign: "center",
             background: "linear-gradient(135deg, #7b61ff, #9c8cff)",
+            color: "#fff",
             py: 2,
           }}
         >
@@ -76,27 +78,42 @@ const IssueHelp = () => {
         </DialogTitle>
 
         {/* Content with an illustration box */}
-        <DialogContent
-          dividers
-          sx={{
-            textAlign: "center",
-            background: "#fff",
-          }}
-        >
+        <DialogContent dividers sx={{ textAlign: "center", background: "#fff" }}>
           <Box
             component="img"
             src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png"
             alt="Help"
             sx={{ width: 100, mb: 2 }}
           />
-          <Typography variant="body1" sx={{ color: "#444", lineHeight: 1.6 }}>
-            Sometimes YouTube may block requests with <b>HTTP 429</b> due to
-            cookie refresh issues. <br />
+          <Typography variant="body1" sx={{ color: "#444", lineHeight: 1.6, mb: 2 }}>
+            Sometimes YouTube may block requests with <b>HTTP 429</b> due to cookie refresh issues. <br />
             <br />
             For smooth access, cookies need to be refreshed periodically. <br />
             <br />
-            Want to try this live? <b>DM me</b> for access or demo.
+            Want to try this live? DM me on Instagram 👇
           </Typography>
+
+          {/* Instagram Link Button */}
+          <Button
+            component={Link}
+            href="https://www.instagram.com/janmejay484/" 
+            target="_blank"
+            rel="noopener noreferrer"
+            startIcon={<InstagramIcon />}
+            sx={{
+              background: "linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4)",
+              color: "#fff",
+              fontWeight: 600,
+              px: 3,
+              borderRadius: "30px",
+              textTransform: "none",
+              "&:hover": {
+                opacity: 0.9,
+              },
+            }}
+          >
+            Message on Instagram
+          </Button>
         </DialogContent>
 
         {/* Action Button */}

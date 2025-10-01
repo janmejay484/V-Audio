@@ -5,12 +5,14 @@ import UploadSection from "./components/UploadSection";
 import Loader from "./components/Loader";
 import Footer from "./components/Footer";
 import styles from "./styles/App.module.css";
+import IssueHelp from "./components/IssueHelp";
 
 function App() {
   const [loading, setLoading] = useState(false);
 
   return (
     <div className={styles.app}>
+      <IssueHelp/>
       <Header />
       {loading && <Loader />}
       <Hero />
